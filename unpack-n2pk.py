@@ -71,10 +71,6 @@ def main(argv):
     sys.exit(-1)
 
   input_filename = argv[1]
-  if input_filename.endswith('.n2pk') or input_filename.endswith('.N2PK'):
-    output_filename = input_filename[:-5] + '.txt'
-  else:
-    output_filename = input_filename + '.txt'
 
   package = N2PK(input_filename)
   print('Unpacking:')
