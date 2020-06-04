@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from collections import namedtuple
+import os
 import os.path
 import struct
 import sys
@@ -54,28 +55,39 @@ class N2PK():
   def filenames(self):
     return [f.name for f in self._files]
 
-  def write_files(self):
+  def write_files(self, output_directory='./'):
     # Be a bit defensive: check if any of the files exist first.
     for f in self._files:
-      if os.path.exists(f.name):
-        raise IOError('Cannot unpack, file already exists: "'+f.name+'"')
+      name = os.path.join(output_directory, f.name)
+      if os.path.exists(name):
+        raise IOError('Cannot unpack, file already exists: "'+name+'"')
     # Now write them all out.
     for f in self._files:
-      with open(f.name, 'wb') as output:
+      name = os.path.join(output_directory, f.name)
+      with open(name, 'wb') as output:
         output.write(f.data)
 
 
 def main(argv):
   if len(sys.argv)<2:
-    print('Usage: %s <file.n2pk>'%sys.argv[0])
+    print('Usage: %s <file.n2pk> [optional_directory]'%sys.argv[0])
     sys.exit(-1)
-
   input_filename = argv[1]
 
+  # If an output directory is given, create if necessary, then switch to it
+  output_directory = './'
+  if len(sys.argv)>2:
+    output_directory = argv[2]
+    if os.path.exists(output_directory):
+      if not os.path.isdir(output_directory):
+        raise IOError('"'+output_directory+'" exists but is not a directory.')
+    else:
+      os.mkdir(output_directory)
+
   package = N2PK(input_filename)
-  print('Unpacking:')
+  print('Unpacking into '+output_directory)
   [print('  '+_) for _ in package.filenames]
-  package.write_files()
+  package.write_files(output_directory)
 
 
 main(sys.argv)

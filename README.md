@@ -7,5 +7,8 @@ The files themselves are not converted in any way, so if they are in an unreadab
 
 Usage:
 ```
-./unpack-n2pk.py <filename>
+./unpack-n2pk.py <filename> [optional_directory]
 ```
+
+If a directory is given, it is created if necessary and files are unpacked there.
+If no directory is given, files are unpacked locally.
